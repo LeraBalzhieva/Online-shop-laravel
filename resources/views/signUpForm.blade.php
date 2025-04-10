@@ -14,7 +14,6 @@
 
         <input type="text" placeholder="Enter name" name="name" id="name" required>
 
-
         @error('email')
         <label for="email"><b>{{ $message }}</b></label>
         @enderror
@@ -23,8 +22,6 @@
         <label style="color: red"></label>
 
         <input type="text" placeholder="Enter email" name="email" id="email" required>
-
-
 
         @error('password')
         <label for="password"><b>{{ $message }}</b></label>

@@ -10,18 +10,26 @@
 
     <h3 class="text-center my-4">Каталог</h3>
     <div class="product-table">
-        <?php foreach ($products as $product): ?>
+        @csrf
+
+    @foreach ($products as $product)
+
+
+
         <div class="card text-center mb-4">
             <img class="card-img-top" src="{{ $product->image }} ; ?>"
                  alt="{{ $product->name }}">
             <div class="card-body">
-                <h5 class="card-title">{{ $product->name }}</h5>
+                <h5 class="card-title">Название: {{ $product->name }}</h5>
                 <p class="card-text">{{ $product->descroption }}</p>
             </div>
             <div class="card-footer">
 
-                {{ $product->price }}
+               Цена: {{ $product->price }}
 
+                <p id="amount-{{ $product->id }}">
+                    В корзине: {{ isset($cartItems[$product->id]) ? $cartItems[$product->id]->amount : 0 }}
+                </p>
 
                 <div class="btn-group">
 
@@ -44,7 +52,7 @@
                 <button type="submit">Открыть продукт</button>
             </form>
         </div>
-        <?php endforeach; ?>
+        @endforeach
 
 
     </div>

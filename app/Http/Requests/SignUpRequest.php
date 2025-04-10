@@ -23,7 +23,8 @@ class SignUpRequest extends FormRequest
     {
         return [
             'name' => 'required|min:2|max:255|regex:/^[a-zA-Zа-яА-ЯёЁ]+$/u',
-            'email' => 'required|email|unique:users',
+            'email' => 'required|email|unique:users,email,' . auth()->id(),
+
             'password' => 'required|min:4|confirmed',
         ];
     }

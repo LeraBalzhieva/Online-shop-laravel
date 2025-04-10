@@ -13,4 +13,9 @@ class User extends BaseUser
         'email',
         'password'
     ];
+
+    public function userProducts()
+    {
+        return $this->hasMany(UserProduct::class);
+    }
 }

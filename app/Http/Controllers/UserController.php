@@ -22,7 +22,7 @@ class UserController
     }
     public function signUp(SignUpRequest $request)
     {
-        $data = $request->all();
+        $data = $request->validated();
         User::query()->create([
             'name' => $data['name'],
             'email' => $data['email'],
@@ -47,9 +47,8 @@ class UserController
         $validatedData = $request->validated();
 
         if (Auth::attempt(['email' => $validatedData['email'], 'password' => $validatedData['password']])) {
-            return redirect()->route('catalog');
+            return response()->redirectTo('catalog');
         }
-
         return redirect()->route('login')->withErrors(['email' => 'Неверный логин или пароль.']);
     }
     public function logout()
@@ -57,17 +56,24 @@ class UserController
         Auth::logout();
         return redirect()->route('login');
     }
+
+
     public function editProfile(SignUpRequest $request)
     {
         $validatedData = $request->validated();
 
-        User::query()->update([
+        // Получаем текущего аутентифицированного пользователя
+        $user = auth()->user();
+
+        // Обновляем данные пользователя
+        $user->query()->update([
             'name' => $validatedData['name'],
             'email' => $validatedData['email'],
             'password' => Hash::make($validatedData['password']),
         ]);
-        return redirect()->route('profile');
 
+        // Редиректим на страницу профиля
+        return redirect()->route('profile')->with('success', 'Профиль успешно обновлен!');
     }
 }
 
