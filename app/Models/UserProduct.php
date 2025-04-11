@@ -9,7 +9,6 @@ use Illuminate\Notifications\Notifiable;
 
 class UserProduct extends Model
 {
-    use HasFactory;
     protected $fillable = ['user_id', 'product_id', 'amount'];
     public function user()
     {

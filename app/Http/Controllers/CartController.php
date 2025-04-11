@@ -20,7 +20,9 @@ class CartController
 
     public function cart()
     {
+
         $cartProducts = $this->cartService->getCart(Auth::user());
+
 
         if (empty($cartProducts)) {
             return redirect()->route('catalog');
@@ -30,20 +32,22 @@ class CartController
 
     public function addProductToCart(AddProductRequest $request)
     {
-        $productId = $request->getProductId();
-        $amount = $request->getQuantity();
+        $user = Auth::user();
+        $productId = $request->input('product_id');
+        $amount = $request->input('amount');
 
-        $result = $this->cartService->addProduct($productId, $amount);
+        $result = $this->cartService->addProduct($user, $productId, $amount);
 
         return json_encode(['cart' => $result]);
     }
 
     public function decreaseProductFromCart(DecreaseProductRequest $request)
     {
-        $productId = $request->getProductId();
-        $amount = $request->getQuantity();
+        $user = Auth::user();
+        $productId = $request->input('product_id');
+        $amount = $request->input('amount');
 
-        $result = $this->cartService->decreaseProduct($productId, $amount);
+        $result = $this->cartService->decreaseProduct($user, $productId, $amount);
 
         return json_encode(['cart' => $result]);
     }

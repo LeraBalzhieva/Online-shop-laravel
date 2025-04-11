@@ -15,6 +15,16 @@ class  Product extends Model
     {
         return $this->hasMany(OrderProduct::class);
     }
+    public function userProduct(User $user)
+    {
+        return $this->hasMany(UserProduct::class);
+    }
+    public function getAmountInCart(User $user)
+    {
+        return $this->userProduct($user)->first()->amount ?? 0;
+    }
+
+
 /*    public function orders()
 
 

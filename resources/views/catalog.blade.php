@@ -12,47 +12,44 @@
     <div class="product-table">
         @csrf
 
-    @foreach ($products as $product)
-
-
-
+        @foreach ($products as $product)
         <div class="card text-center mb-4">
-            <img class="card-img-top" src="{{ $product->image }} ; ?>"
-                 alt="{{ $product->name }}">
+            <img class="card-img-top" src="{{ $product->image }}"
+                 alt="{{$product->name}}">
             <div class="card-body">
-                <h5 class="card-title">Название: {{ $product->name }}</h5>
-                <p class="card-text">{{ $product->descroption }}</p>
+                <h5 class="card-title">{{$product->name}}</h5>
+                <p class="card-text">{{$product->description}}</p>
             </div>
             <div class="card-footer">
+                <strong>Цена: {{$product->price}} р</strong>
 
-               Цена: {{ $product->price }}
-
-                <p id="amount-{{ $product->id }}">
-                    В корзине: {{ isset($cartItems[$product->id]) ? $cartItems[$product->id]->amount : 0 }}
+                <p> кол-во <span class="product-quantity" data-product-id={{$product->id}}>
+                {{$product->getAmountInCart(\Illuminate\Support\Facades\Auth::user())}}
+                        </span>
                 </p>
 
                 <div class="btn-group">
-
-                    <form class="add-product" action="/add-product" method="POST" onsubmit="return false">
-                        <input type="hidden" name="product_id" value="">
+                    <form class="add-product" action="/add-product" method="POST">
+                        @csrf
+                        <input type="hidden" name="product_id" value="{{$product->id}}">
                         <input type="hidden" name="amount" value="1">
                         <button type="submit" class="btn btn-danger">+</button>
-
-
                     </form>
-                    <form class="decrease-product" action="/decrease-product" method="POST"  onsubmit="return false">
-                        <input type="hidden" name="product_id" value="">
+                    <form class="decrease-product" action="/decrease-product" method="POST">
+                        @csrf
+                        <input type="hidden" name="product_id" value="{{$product->id}}">
+                        <input type="hidden" name="amount" value="1">
                         <button type="submit" class="btn btn-danger">-</button>
                     </form>
                 </div>
             </div>
 
             <form action="/product" method="POST">
-                <input type="hidden" name="product_id" value="">
+                <input type="hidden" name="product_id" value="{{$product->id}}">
                 <button type="submit">Открыть продукт</button>
             </form>
         </div>
-        @endforeach
+        @endforeach;
 
 
     </div>
@@ -126,33 +123,46 @@
 <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
 
 <script>
-    $("document").ready(function() {
-        $('.add-product').submit(function () {
+    $(document).ready(function() {
+        // Обработка добавления товара
+        $('.add-product').on('submit', function(e) {
+            e.preventDefault();
 
-            var form = $(this);
             $.ajax({
                 type: 'POST',
-                url: "/add-product",
-                data: form.serialize(),
+                url: $(this).attr('action'),
+                data: $(this).serialize(),
                 dataType: 'json',
-                success: function (data){
-                    var obj = JSON.parse(data);
-                    form.closest('.card-footer').find('.product-count').text(obj.count);
+                success: function(response) {
+                    // Обновляем количество на странице
+                    var cardFooter = $(this).closest('.card-footer');
+                    cardFooter.find('.product-count').text(response.count);
+
+                }.bind(this),
+                error: function(xhr) {
+                    alert('Ошибка: ' + xhr.responseJSON.message);
                 }
             });
         });
 
-        $('.decrease-product').submit(function () {
+        // Обработка уменьшения количества товара
+        $('.decrease-product').on('submit', function(e) {
+            e.preventDefault();
 
-            var form = $(this);
             $.ajax({
                 type: 'POST',
-                url: "/decrease-product",
-                data: form.serialize(),
+                url: $(this).attr('action'),
+                data: $(this).serialize(),
                 dataType: 'json',
-                success: function (data){
-                    var obj = JSON.parse(data);
-                    form.closest('.card-footer').find('.product-count').text(obj.count);
+                success: function(response) {
+                    // Обновляем количество на странице
+                    var cardFooter = $(this).closest('.card-footer');
+                    cardFooter.find('.product-count').text(response.count);
+
+
+                }.bind(this),
+                error: function(xhr) {
+                    alert('Ошибка: ' + xhr.responseJSON.message);
                 }
             });
         });

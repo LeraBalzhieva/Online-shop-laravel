@@ -11,27 +11,41 @@ class CartService
 {
     public function getCart(User $user)
     {
-       return $user->userProducts()->with('product')->get();
+        return $user->userProducts()->with('product')->get();
     }
 
-    public function addProduct(User $user, Product $product, int $amount = 1): bool
+    public function addProduct(User $user, int $productId, int $amount = 1)
     {
-        $userProduct = $user->UserProducts()->where('product_id, $product->id')->first();
+        $product = Product::findOrFail($productId);
+        $userProduct = $user->userProducts()->where('product_id', $product->id)->first();
+
         if ($userProduct) {
             $userProduct->increment('amount', $amount);
         } else {
-            UserProduct::query()->create([
+            UserProduct::create([
                 'user_id' => $user->id,
                 'product_id' => $product->id,
                 'amount' => $amount
             ]);
         }
-        return $this->getCart($user);
 
+        return $this->getCart($user);
     }
 
-    public function decreaseProduct(int $productId, int $amount): bool
+    public function decreaseProduct(User $user, int $productId, int $amount = 1)
     {
+        $userProduct = $user->userProducts()->where('product_id', $productId)->firstOrFail();
 
+        if (!$userProduct) {
+            throw new \Exception('Product not found in cart');
+        }
+
+        if ($userProduct->amount > $amount) {
+            $userProduct->decrement('amount', $amount);
+        } else {
+            $userProduct->delete();
+        }
+
+        return $this->getCart($user);
     }
 }

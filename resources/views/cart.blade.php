@@ -19,12 +19,14 @@
                     <p class="card-text">Количество: {{ $cartProduct->amount }}</p>
                     <p class="card-text">Цена: {{ $cartProduct->Product->price  }} р</p>
                     <p class="card-text">Итого: {{ $cartProduct->amount * $cartProduct->Product->price }} р</p>
+
+                     @php $totalAmount += $cartProduct->amount * $cartProduct->Product->price; @endphp
                 </div>
-                <h3 class="card-title">Общая сумма заказа: {{ $totalAmount += $cartProduct->amount * $cartProduct->Product->price }} руб.</h3>
 
             </div>
 
         @endforeach
+            <h3 class="card-title">Общая сумма заказа: {{ $totalAmount }} руб.</h3>
 
             @else
             <p>Корзина пуста.</p>
