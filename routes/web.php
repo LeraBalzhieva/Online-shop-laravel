@@ -28,6 +28,15 @@ Route::middleware('auth')->group(function () {
     Route::post('/add-product', [\App\Http\Controllers\CartController::class, 'addProductToCart']);
     Route::post('/decrease-product', [\App\Http\Controllers\CartController::class, 'decreaseProductFromCart']);
 
+    Route::get('/product/{product}/reviews', [App\Http\Controllers\ProductController::class, 'getProductReviews'])->name('product.show');
+    Route::post('/reviews', [App\Http\Controllers\ProductController::class, 'addReviews'])->name('review.store');
+
+
+
+
+
+
+
     /* Route::post('/add-product', [CartController::class, 'addProductToCart'])->name('addProduct');
     Route::post('/decrease-product', [CartController::class, 'decreaseProductFromCart'])->name('decreaseProduct');
     Route::get('/profile', [UserController::class, 'getProfile'])->name('profile');

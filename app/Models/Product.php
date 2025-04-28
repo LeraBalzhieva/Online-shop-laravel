@@ -24,20 +24,15 @@ class  Product extends Model
         return $this->userProduct($user)->first()->amount ?? 0;
     }
 
-
-/*    public function orders()
-
-
+    public function reviews()
     {
-        return $this->hasMany(
-            Order::class,
-            OrderProduct::class,
-            'product_id',
-            'id',
-            'id',
-            'order_id',
-        );
-    }*/
+        return $this->hasMany(Review::class);
+    }
 
+
+    public function totalReviews()
+    {
+        return $this->reviews()->count();
+    }
 
 }

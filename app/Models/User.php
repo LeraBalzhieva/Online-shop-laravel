@@ -18,4 +18,11 @@ class User extends BaseUser
     {
         return $this->hasMany(UserProduct::class);
     }
+
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
+    }
+
+
 }

@@ -19,7 +19,7 @@
             <label style="color: red"></label>
 
             <button>login</button>
-            <li class="active"><a href="/registration">Регистрация</a></li>
+            <li class="active"><a href="/signUp">Регистрация</a></li>
             <p class="message">Not registered? <a href="#">Create an account</a></p>
         </form>
     </div>

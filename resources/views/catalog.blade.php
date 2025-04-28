@@ -23,10 +23,10 @@
             <div class="card-footer">
                 <strong>Цена: {{$product->price}} р</strong>
 
-                <p> кол-во <span class="product-quantity" data-product-id={{$product->id}}>
+                <p> Количество: <span class="product-quantity" data-product-id={{$product->id}} >
                 {{$product->getAmountInCart(\Illuminate\Support\Facades\Auth::user())}}
                         </span>
-                </p>
+                шт. </p>
 
                 <div class="btn-group">
                     <form class="add-product" action="/add-product" method="POST">
@@ -44,12 +44,13 @@
                 </div>
             </div>
 
-            <form action="/product" method="POST">
+            <form action="{{route('product.show',['product' => $product->id])}}" method="GET">
+                @csrf
                 <input type="hidden" name="product_id" value="{{$product->id}}">
                 <button type="submit">Открыть продукт</button>
             </form>
         </div>
-        @endforeach;
+        @endforeach
 
 
     </div>
