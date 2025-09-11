@@ -1,4 +1,4 @@
-<?php
+    <?php
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('order_products', function (Blueprint $table) {
             $table->id();
-            $table->integer('order_id')->nullable(false)->unique();
+            $table->integer('order_id')->nullable(false);
             $table->integer('product_id')->nullable(false)->unique();
             $table->integer('amount')->nullable(false);
             $table->foreign('order_id')->references('id')->on('orders');

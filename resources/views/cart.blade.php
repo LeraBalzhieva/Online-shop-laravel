@@ -25,10 +25,10 @@
 
             </div>
 
-        @endforeach
+            @endforeach
             <h3 class="card-title">Общая сумма заказа: {{ $totalAmount }} руб.</h3>
 
-            @else
+        @else
             <p>Корзина пуста.</p>
         @endif
     </div>
@@ -65,6 +65,11 @@
             flex: 0 1 calc(33.333% - 10px); /* Устанавливаем ширину карточки на 1/3 (33.333%) с отступом */
             margin-bottom: 20px; /* Отступ снизу для карточек */
             box-sizing: border-box; /* Учитываем отступы и границы в ширине */
+        }
+
+        .card-img-top {
+            height: 250px;
+            object-fit: cover;
         }
 
         .card:hover {

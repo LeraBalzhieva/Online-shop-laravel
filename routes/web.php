@@ -31,6 +31,12 @@ Route::middleware('auth')->group(function () {
     Route::get('/product/{product}/reviews', [App\Http\Controllers\ProductController::class, 'getProductReviews'])->name('product.show');
     Route::post('/reviews', [App\Http\Controllers\ProductController::class, 'addReviews'])->name('review.store');
 
+    Route::get('/order', [\App\Http\Controllers\OrderController::class, 'getOrder'])->name('order');
+    Route::post('/order', [\App\Http\Controllers\OrderController::class, 'order']);
+
+    Route::get('/orderProducts', [\App\Http\Controllers\OrderController::class, 'getAllOrders'])->name('orderProducts');
+    Route::post('/orderProducts', [\App\Http\Controllers\OrderController::class, 'orderProducts']);
+
 
 
 

@@ -36,22 +36,12 @@ class ProductController
     {
         $data = $request->validated();
 
-
         Review::query()->create([
             'product_id' => $data['product_id'],
             'user_id' => Auth::id(),
             'comment' => $data['comment'],
             'rating' => $data['rating'],
         ]);
-
-
-
-/*        $product->reviews()->create([
-            'product_id' => $data['product_id'],
-            'user_id' => Auth::id(),
-            'comment' => $data['comment'],
-            'rating' => $data['rating'],
-        ]);*/
 
         return redirect()->route('product.show', ['product' => $data['product_id']]);
 

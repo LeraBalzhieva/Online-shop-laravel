@@ -35,8 +35,8 @@
         <label for="psw-repeat"><b>Repeat Password</b></label>
 
 
-        <input type="password" placeholder="Repeat Password" name="password_confirmation" id="password_confirmation" required>
-
+        <input type="password" placeholder="Repeat Password" name="password_confirmation" id="password_confirmation"
+               required>
 
 
         <hr>
@@ -45,12 +45,14 @@
     </div>
 
     <div class="container signin">
-        <p>Already have an account? <a href="#">Sign in</a>.</p>
+        <p>Already have an account? <a href="login">Sign in</a>.</p>
     </div>
 </form>
 
 <style>
-    * {box-sizing: border-box}
+    * {
+        box-sizing: border-box
+    }
 
     /* Add padding to containers */
     .container {
@@ -91,7 +93,7 @@
     }
 
     .registerbtn:hover {
-        opacity:1;
+        opacity: 1;
     }
 
     /* Add a blue text color to links */

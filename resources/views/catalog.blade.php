@@ -3,7 +3,7 @@
         <ul class="nav nav-pills">
             <li class="nav-item"><a class="nav-link active" href="/profile">Мой профиль</a></li>
             <li class="nav-item"><a class="nav-link" href="/cart">Корзина</a></li>
-            <li class="nav-item"><a class="nav-link" href="/orderProduct">Мои заказы</a></li>
+            <li class="nav-item"><a class="nav-link" href="/orderProducts">Мои заказы</a></li>
             <li class="nav-item"><a class="nav-link" href="/logout">Выйти</a></li>
         </ul>
     </nav>
@@ -23,7 +23,7 @@
             <div class="card-footer">
                 <strong>Цена: {{$product->price}} р</strong>
 
-                <p> Количество: <span class="product-quantity" data-product-id={{$product->id}} >
+                <p> Количество: <span class="product-count" data-product-id={{$product->id}} >
                 {{$product->getAmountInCart(\Illuminate\Support\Facades\Auth::user())}}
                         </span>
                 шт. </p>
@@ -91,7 +91,7 @@
     }
 
     .card-img-top {
-        height: 200px;
+        height: 250px;
         object-fit: cover;
     }
 
