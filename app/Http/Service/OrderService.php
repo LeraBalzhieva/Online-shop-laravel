@@ -23,6 +23,7 @@ class OrderService
 
         $cartProducts = UserProduct::query()->where('user_id', $request->user()->id)->get();
 
+
         DB::transaction(function () use ($request, $cartProducts) {
             $order = Order::query()->create([
                 'user_id' => $request->user()->id,

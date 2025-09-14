@@ -46,7 +46,8 @@ class UserController
     {
         $validatedData = $request->validated();
 
-        if (Auth::attempt(['email' => $validatedData['email'], 'password' => $validatedData['password']])) {
+        if (Auth::attempt(['email' => $validatedData['email'], 'password' => $validatedData['password']]))
+        {
             return response()->redirectTo('catalog');
         }
         return redirect()->route('login')->withErrors(['email' => 'Неверный логин или пароль.']);
