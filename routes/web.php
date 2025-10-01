@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\MailTestController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -37,18 +38,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/orderProducts', [\App\Http\Controllers\OrderController::class, 'getAllOrders'])->name('orderProducts');
     Route::post('/orderProducts', [\App\Http\Controllers\OrderController::class, 'orderProducts']);
 
+    Route::get('/mail/test', [\App\Http\Controllers\TestMailController::class, 'send']);
+    Route::get('/mail/receive', [\App\Http\Controllers\TestMailController::class, 'receive']);
+    Route::get('/send-test-email', [MailTestController::class, 'send']);
 
-
-
-
-
-
-    /* Route::post('/add-product', [CartController::class, 'addProductToCart'])->name('addProduct');
-    Route::post('/decrease-product', [CartController::class, 'decreaseProductFromCart'])->name('decreaseProduct');
-    Route::get('/profile', [UserController::class, 'getProfile'])->name('profile');
-    Route::get('/edit-profile', [UserController::class, 'getEditProfile'])->name('editProfile.form');
-    Route::post('/edit-profile', [UserController::class, 'editProfile'])->name('editProfile.submit');
-
-    Route::get('/product/{id}', [ProductController::class, 'getProduct'])->name('product');
-    Route::post('/add-review', [ProductController::class, 'addReview'])->name('addReview');*/
 });

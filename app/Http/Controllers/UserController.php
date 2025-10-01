@@ -4,14 +4,22 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\SignUpRequest;
+use App\Http\Service\RabbitmqService;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 
-class UserController
+class
+UserController
 {
+    private RabbitmqService $rabbitmqService;
+    public function __construct(RabbitmqService $rabbitmqService)
+    {
+        $this->rabbitmqService = $rabbitmqService;
+
+    }
     public function getSignUpForm()
     {
         return view('signUpForm');
@@ -22,12 +30,18 @@ class UserController
     }
     public function signUp(SignUpRequest $request)
     {
+
         $data = $request->validated();
-        User::query()->create([
+        $user = User::query()->create([
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
         ]);
+
+ //       Mail::to('dashkina.lera@yandex.ru')->send(New TestMail($data));
+
+
+        $this->rabbitmqService->produce(['user_id' => $user->id], 'sign-up-email');
 
         return response()->redirectTo('login');
     }
