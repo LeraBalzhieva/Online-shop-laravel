@@ -18,7 +18,7 @@ class RabbitmqService
      */
     public function __construct()
     {
-        $this->connection = new AMQPStreamConnection('rabbitmq', 5672, 'user', 'password');
+        //$this->connection = new AMQPStreamConnection('localhost', 5672, 'user', 'password');
     }
     public function produce(array $data, string $queueName)
     {

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\SignUpRequest;
 use App\Http\Service\RabbitmqService;
+use App\Jobs\SendUserNotification;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
@@ -14,12 +15,7 @@ use Illuminate\Support\Facades\Hash;
 class
 UserController
 {
-    private RabbitmqService $rabbitmqService;
-    public function __construct(RabbitmqService $rabbitmqService)
-    {
-        $this->rabbitmqService = $rabbitmqService;
 
-    }
     public function getSignUpForm()
     {
         return view('signUpForm');
@@ -38,10 +34,10 @@ UserController
             'password' => Hash::make($data['password']),
         ]);
 
+        SendUserNotification::dispatch($user);
+
  //       Mail::to('dashkina.lera@yandex.ru')->send(New TestMail($data));
-
-
-        $this->rabbitmqService->produce(['user_id' => $user->id], 'sign-up-email');
+  //      $this->rabbitmqService->produce(['user_id' => $user->id], 'sign-up-email');
 
         return response()->redirectTo('login');
     }
@@ -67,8 +63,7 @@ UserController
         return redirect()->route('login')->withErrors(['email' => 'Неверный логин или пароль.']);
     }
     public function logout()
-    {
-        Auth::logout();
+    {       Auth::logout();
         return redirect()->route('login');
     }
 

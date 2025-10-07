@@ -18,6 +18,8 @@ services:
       - ./docker/php/xdebug.ini:/usr/local/etc/php/conf.d/docker-php-xdebug.ini
     networks:
         - default
+    depends_on:
+        - redis
 
   db:
     image: postgres:13
@@ -52,6 +54,14 @@ services:
          - "1025:1025" # smtp-сервер
       networks:
           - default
+
+  redis:
+      image: redis:alpine
+      container_name: redis
+      ports:
+          - "6379:6379"
+      restart: unless-stopped
+
 
 volumes:
     rabbitmq_data:

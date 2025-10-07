@@ -32,3 +32,8 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 RUN groupadd -g 1000 www
 RUN useradd -u 1000 -ms /bin/bash -g www www
 USER www
+
+RUN apt-get update && apt-get install -y libssl-dev \
+    && pecl install redis \
+    && docker-php-ext-enable redis
+

@@ -6,7 +6,9 @@ use App\Http\Requests\AddReviewRequest;
 use App\Models\Product;
 use App\Models\Review;
 use App\Models\UserProduct;
+use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 
 
 class ProductController
@@ -31,6 +33,34 @@ class ProductController
             'averageRating' => $averageRating
         ]);
     }
+    public function index()
+    {
+        $products = Cache::remember('products_all', 3600, function () {
+            return Product::all();
+
+        });
+
+        return view('catalog', compact('products'));
+    }
+
+    public function update(Request $request, Product $product)
+    {
+        $product->update($request->all());
+        Cache::forget('products_all');
+
+        return redirect()->route('catalog')
+            ->with('success', 'Продукт обновлён и кэш сброшен');
+    }
+
+    public function destroy(Product $product)
+    {
+        $product->delete();
+        Cache::forget('products_all');
+
+        return redirect()->route('catalog')
+            ->with('success', 'Продукт удалён и кэш сброшен');
+    }
+
 
     public function addReviews(AddReviewRequest $request, Product $product)
     {
