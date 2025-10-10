@@ -34,7 +34,7 @@ UserController
             'password' => Hash::make($data['password']),
         ]);
 
-        SendUserNotification::dispatch($user);
+       // SendUserNotification::dispatch($user);
 
  //       Mail::to('dashkina.lera@yandex.ru')->send(New TestMail($data));
   //      $this->rabbitmqService->produce(['user_id' => $user->id], 'sign-up-email');

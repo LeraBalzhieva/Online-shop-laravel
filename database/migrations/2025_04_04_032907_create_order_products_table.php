@@ -14,10 +14,11 @@ return new class extends Migration
         Schema::create('order_products', function (Blueprint $table) {
             $table->id();
             $table->integer('order_id')->nullable(false);
-            $table->integer('product_id')->nullable(false)->unique();
+            $table->integer('product_id')->nullable(false);
             $table->integer('amount')->nullable(false);
             $table->foreign('order_id')->references('id')->on('orders');
             $table->foreign('product_id')->references('id')->on('products');
+            $table->unique(['order_id', 'product_id']);
             $table->timestamps();
         });
     }

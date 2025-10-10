@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 
 class CartService
 {
+
     public function getCart(User $user)
     {
         return $user->userProducts()->with('product')->get();
