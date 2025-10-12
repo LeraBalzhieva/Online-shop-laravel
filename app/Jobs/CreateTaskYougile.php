@@ -34,7 +34,10 @@ class CreateTaskYougile implements ShouldQueue
             $client = new YougileClient();
             $response = $client->createTask($this->dto);
 
-
+            if (!empty($response['id'])) {
+                Order::where('id', $this->orderId)
+                    ->update(['yougile_task_id' => $response['id']]);
+            }
 
         } catch (\Exception $exception) {
             print_r($exception->getMessage());
