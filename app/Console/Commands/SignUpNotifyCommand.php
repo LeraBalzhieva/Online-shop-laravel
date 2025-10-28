@@ -5,10 +5,9 @@ namespace App\Console\Commands;
 
 use App\Http\Service\RabbitmqService;
 use App\Mail\TestMail;
+use App\Models\User;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Mail;
-use PhpAmqpLib\Connection\AMQPStreamConnection;
-use App\Models\User;
 
 class SignUpNotifyCommand extends Command
 {
@@ -30,6 +29,7 @@ class SignUpNotifyCommand extends Command
      * Execute the console command.
      */
     private RabbitmqService $rabbitmqService;
+
     public function __construct(RabbitmqService $rabbitmqService)
     {
         parent::__construct();
@@ -46,7 +46,7 @@ class SignUpNotifyCommand extends Command
             $data = json_decode($data, true);
             $user = User::query()->find($data['user_id']);
 
-            Mail::to($user->email)->send(New TestMail($data));
+            Mail::to($user->email)->send(new TestMail($data));
         };
 
         echo 'WAIT...';

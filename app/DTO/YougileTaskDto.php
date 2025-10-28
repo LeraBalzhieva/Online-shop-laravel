@@ -4,13 +4,11 @@ namespace App\DTO;
 
 class YougileTaskDto
 {
-
     public int $orderId;
     public string $description;
     public string $columnId;
     public bool $archived;
     public bool $completed;
-
 
     public function __construct(int $orderId, string $description)
     {

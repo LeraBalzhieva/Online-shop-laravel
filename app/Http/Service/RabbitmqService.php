@@ -7,7 +7,9 @@ use App\Models\User;
 use Illuminate\Support\Facades\Mail;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Message\AMQPMessage;
-
+/**
+ * Сервис для работы с RabbitMQ.
+ */
 class RabbitmqService
 {
 
@@ -18,8 +20,14 @@ class RabbitmqService
      */
     public function __construct()
     {
-        //$this->connection = new AMQPStreamConnection('localhost', 5672, 'user', 'password');
     }
+
+    /**
+     * Отправляет сообщение в очередь.
+     * @param array $data
+     * @param string $queueName
+     * @return void
+     */
     public function produce(array $data, string $queueName)
     {
         $channel = $this->connection->channel();
@@ -29,8 +37,14 @@ class RabbitmqService
         $data = json_encode($data);
         $msg = new AMQPMessage($data);
         $channel->basic_publish($msg, '', $queueName);
-
     }
+
+    /**
+     * Подписывается на очередь и обрабатывает сообщения через callback.
+     * @param string $queueName
+     * @param callable $callback
+     * @return void
+     */
     public function consume(string $queueName, callable $callback)
     {
         echo 'test';
@@ -42,9 +56,7 @@ class RabbitmqService
 
         try {
             $channel->consume(true);
-        }
-
-         catch (\Throwable $exception) {
+        } catch (\Throwable $exception) {
             echo $exception->getMessage();
         }
     }

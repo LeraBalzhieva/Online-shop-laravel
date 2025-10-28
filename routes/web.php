@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Order;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MailTestController;
 
@@ -15,7 +16,7 @@ Route::post('/login', [\App\Http\Controllers\UserController::class, 'login']);
 
 Route::middleware('auth')->group(function () {
 
-    Route::get('/catalog', [\App\Http\Controllers\ProductController::class, 'getCatalog']);
+    Route::get('/catalog', [\App\Http\Controllers\ProductController::class, 'getCatalog'])->name('catalog');
     Route::post('/catalog', [\App\Http\Controllers\ProductController::class, 'catalog']);
 
     Route::get('/logout', [\App\Http\Controllers\UserController::class, 'logout']);
@@ -30,7 +31,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/decrease-product', [\App\Http\Controllers\CartController::class, 'decreaseProductFromCart']);
 
     Route::get('/product/{product}/reviews', [App\Http\Controllers\ProductController::class, 'getProductReviews'])->name('product.show');
-    Route::post('/reviews', [App\Http\Controllers\ProductController::class, 'addReviews'])->name('review.store');
+    Route::post('/product/{product}/reviews', [App\Http\Controllers\ProductController::class, 'addReviews'])
+        ->name('review.store');
 
     Route::get('/order', [\App\Http\Controllers\OrderController::class, 'getOrder'])->name('order');
     Route::post('/order', [\App\Http\Controllers\OrderController::class, 'order']);
@@ -42,4 +44,12 @@ Route::middleware('auth')->group(function () {
     Route::get('/mail/receive', [\App\Http\Controllers\TestMailController::class, 'receive']);
     Route::get('/send-test-email', [MailTestController::class, 'send']);
 
+    Route::post('/webhook/yookassa', [\App\Http\Controllers\YooKassaWebhookController::class, 'handle'])
+        ->name('yookassa.webhook');
+
+    Route::get('/payment/success/{order_id}', function ($order_id) {
+        $order = Order::findOrFail($order_id);
+        $order->update(['status' => 'paid']);
+        return view('payment_success', compact('order'));
+    })->name('payment.success');
 });

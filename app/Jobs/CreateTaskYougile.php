@@ -10,7 +10,10 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-
+/**
+ * Job для создания задачи в Yougile.
+ * Отправляет данные заказа и сохраняет ID задачи в таблицу orders.
+ */
 class CreateTaskYougile implements ShouldQueue
 {
 
@@ -25,12 +28,13 @@ class CreateTaskYougile implements ShouldQueue
         $this->orderId = $orderId;
     }
 
+    /**
+     * Обработчик Job
+     * @return void
+     */
     public function handle(): void
     {
-
         try {
-            echo "Test";
-
             $client = new YougileClient();
             $response = $client->createTask($this->dto);
 

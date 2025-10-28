@@ -2,27 +2,44 @@
 
 namespace App\Http\Service;
 
+use App\DTO\YooKassaPaymentDTO;
 use App\DTO\YougileTaskDto;
 use App\Http\Requests\OrderRequest;
+use App\Http\Service\Clients\YooKassaService;
 use App\Jobs\CreateTaskYougile;
 use App\Models\Order;
 use App\Models\OrderProduct;
 use App\Models\UserProduct;
-use Illuminate\Container\Attributes\Auth;
 use Illuminate\Support\Facades\DB;
 
+/**
+ * Сервис для работы с заказами пользователей.
+ */
 class OrderService
 {
+    public function __construct(
+        protected CartService     $cartService,
+        protected YooKassaService $yooKassaService,
+        protected Order           $order
+    ) {}
 
-    protected CartService $cartService;
-    private $order;
-
-    public function __construct()
-    {
-        $this->cartService = new CartService();
-        $this->order = new Order();
-    }
-
+    /**
+     *  Создаёт заказ, формирует задачу для Yougile и возвращает URL для оплаты.
+     * @param OrderRequest $request
+     * @return string URL для перехода на оплату
+     * @throws \Throwable
+     * @throws \YooKassa\Common\Exceptions\ApiConnectionException
+     * @throws \YooKassa\Common\Exceptions\ApiException
+     * @throws \YooKassa\Common\Exceptions\AuthorizeException
+     * @throws \YooKassa\Common\Exceptions\BadApiRequestException
+     * @throws \YooKassa\Common\Exceptions\ExtensionNotFoundException
+     * @throws \YooKassa\Common\Exceptions\ForbiddenException
+     * @throws \YooKassa\Common\Exceptions\InternalServerError
+     * @throws \YooKassa\Common\Exceptions\NotFoundException
+     * @throws \YooKassa\Common\Exceptions\ResponseProcessingException
+     * @throws \YooKassa\Common\Exceptions\TooManyRequestsException
+     * @throws \YooKassa\Common\Exceptions\UnauthorizedException
+     */
     public function create(OrderRequest $request)
     {
         $cartProducts = UserProduct::query()->where('user_id', $request->user()->id)->get();
@@ -49,9 +66,9 @@ class OrderService
                 $userProducts = UserProduct::query()->where('user_id', $request->user()->id)->delete();
 
                 return $order;
-             });
+            });
 
-            $description =  "Имя: {$this->order->name} <br>"
+            $description = "Имя: {$this->order->name} <br>"
                 . "Адрес: {$this->order->address} <br>"
                 . "Телефон: {$this->order->phone} <br>"
                 . "Список товаров: <br>";
@@ -66,13 +83,26 @@ class OrderService
 
             CreateTaskYougile::dispatch($dto, $order->id);
 
+
+            $totalAmount = $order->orderProducts()->with('product')->get()
+                ->sum(fn($item) => $item->amount * $item->product->price);
+
+            $paymentDescription = "Оплата заказа № {$order->id} , сумма {$totalAmount} руб.";
+
+            $dto = new YooKassaPaymentDTO(
+                orderId: $order->id,
+                amount: $totalAmount,
+                description: $paymentDescription,
+            );
+
+            $paymentUrl = $this->yooKassaService->createPayment($dto);
+
+            $order->update(['payment_url' => $paymentUrl]);
+
+            return $paymentUrl;
+
         } catch (\Throwable $exception) {
             throw $exception;
         }
-
-
     }
-
-
-
 }

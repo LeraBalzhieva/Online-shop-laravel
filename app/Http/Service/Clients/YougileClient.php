@@ -8,7 +8,10 @@ use App\Models\Order;
 use GuzzleHttp\Exception\RequestException;
 use http\Exception\RuntimeException;
 use Illuminate\Support\Facades\Http;
-
+/**
+ * Клиент для работы с API YouGile.
+ * Отвечает за создание и удаление задач через API.
+ */
 class YougileClient
 {
     public string $baseUrl;
@@ -20,6 +23,13 @@ class YougileClient
         $this->apiKey = config('services.yougile.api_key');
         $this->apiToken = config('services.yougile.api_token');
     }
+
+    /**
+     * Создает задачу
+     * @param YougileTaskDto $dto
+     * @return array
+     * @throws \Illuminate\Http\Client\ConnectionException
+     */
     public function createTask(YougileTaskDto $dto): array
     {
         try {
@@ -37,6 +47,14 @@ class YougileClient
             throw new \RuntimeException($exception->getMessage(), 500);
         }
     }
+
+    /**
+     * Удаляет задачу
+     * @param string $taskId
+     * @return void
+     * @throws \Illuminate\Http\Client\ConnectionException
+     * @throws \Throwable
+     */
     public function deleteTask(string $taskId)
     {
         $response = retry(3, function () use ($taskId) {

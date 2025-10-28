@@ -27,10 +27,9 @@
 @auth
     <h2>Оставить отзыв</h2>
 
-    <form method="post" action="{{ route('review.store') }}">
-
-
+    <form method="post" action="{{ route('review.store', ['product' => $product->id]) }}">
         @csrf
+        {{-- скрытое поле необязательно, но можно оставить --}}
         <input type="hidden" name="product_id" value="{{ $product->id }}">
 
         <label for="rating">Оценка:</label>
@@ -40,19 +39,12 @@
             @endfor
         </select>
 
-        @error('rating')
-        <div class="error">{{ $message }}</div>
-        @enderror
-
         <label for="comment">Отзыв:</label>
         <textarea name="comment" id="comment" required></textarea>
 
-        @error('comment')
-        <div class="error">{{ $message }}</div>
-        @enderror
-
         <button type="submit">Отправить</button>
     </form>
+
 @else
     <p><a href="{{ route('login') }}">Войдите</a>, чтобы оставить отзыв</p>
 @endauth

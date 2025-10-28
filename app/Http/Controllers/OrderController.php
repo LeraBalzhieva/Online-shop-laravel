@@ -6,31 +6,47 @@ use App\Http\Requests\OrderRequest;
 use App\Http\Service\CartService;
 use App\Http\Service\OrderService;
 use App\Models\Order;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
+/**
+ *  Контроллер для управления заказами пользователей.
+ *  Отвечает за отображение страницы оформления заказа,
+ *  создание нового заказа и просмотр всех заказов.
+ */
 class OrderController extends Controller
 {
-    private CartService $cartService;
-    private OrderService $orderService;
-
-    public function __construct()
+    public function __construct(
+        protected CartService  $cartService,
+        protected OrderService $orderService)
     {
-        $this->cartService = new CartService();
-        $this->orderService = new OrderService();
     }
+
+    /**
+     * Отображает страницу оформления заказа.
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|object
+     */
     public function getOrder()
     {
         $cartProducts = $this->cartService->getCart(Auth::user());
         return view('order', ['cartProducts' => $cartProducts]);
     }
 
+    /**
+     * Создаёт новый заказ.
+     * @param OrderRequest $request Валидированный запрос с данными заказа.
+     * @return \Illuminate\Http\RedirectResponse
+     * @throws \Throwable
+     */
     public function order(OrderRequest $request)
     {
-        $this->orderService->create($request);
-        return redirect()->route('order');
+        $paymentUrl = $this->orderService->create($request);
+        return redirect()->away($paymentUrl);
     }
 
+    /**
+     * Отображает список всех заказов пользователя.
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|object
+     */
     public function getAllOrders()
     {
 

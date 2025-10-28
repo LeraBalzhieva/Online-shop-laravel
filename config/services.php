@@ -39,8 +39,13 @@ return [
         'api_key' => env('YOUGILE_API_KEY'),
         'api_token' => env('YOUGILE_API_TOKEN'),
         'base_url' => env('YOUGILE_BASE_URL'),
-    ]
+    ],
 
+    'yookassa' => [
+        'api_key' => env('YOOKASSA_API_KEY'),
+        'base_url' => env('YOOKASSA_BASE_URL'),
+        'shop_id' => env('YOOKASSA_SHOP_ID'),
+    ]
 
 
 ];

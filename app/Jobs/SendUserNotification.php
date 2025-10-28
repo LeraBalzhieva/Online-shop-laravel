@@ -16,25 +16,19 @@ class SendUserNotification implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-
     protected User $user;
 
     public function __construct(User $user)
     {
         $this->user = $user;
     }
-
     public function handle()
     {
         try {
-            echo "Test";
             Mail::to($this->user->email)->send(new UserNotificationMail($this->user->name));
-
         }
         catch (\Exception $exception){
             print_r($exception->getMessage());
         }
-
-
     }
 }

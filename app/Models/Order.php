@@ -8,7 +8,7 @@ class Order extends Model
 {
 
 
-    protected $fillable = ['user_id', 'name', 'phone', 'city', 'address', 'comment'];
+    protected $fillable = ['user_id', 'name', 'phone', 'city', 'address', 'comment', 'status'];
 
     public function orderProducts()
     {

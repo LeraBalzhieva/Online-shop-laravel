@@ -1,37 +1,34 @@
-<div class="container">
-    <ul>
-        <li class="active"><a href="/profile">Мой профиль</a></li>
-        <li class="active"><a href="/catalog">Каталог</a></li>
-        <li class="active"><a href="/order">К оформлению</a></li>
-    </ul>
+    <div class="container">
+        <ul>
+            <li><a href="/profile">Мой профиль</a></li>
+            <li><a href="/catalog">Каталог</a></li>
+            <li><a href="/order">К оформлению</a></li>
+        </ul>
 
-    <h3>CART</h3>
-    <div class="card-deck">
-        @csrf
+        <h3>Корзина</h3>
+        <div class="card-deck">
+            @if($cartProducts->isEmpty())
+                <p>Ваша корзина пуста.</p>
+            @else
+                @php $totalAmount = 0; @endphp
+                @foreach ($cartProducts as $cartProduct)
+                    <div class="card text">
+                        <img class="card-img-top" src="{{ $cartProduct->product->image }}" alt="Card image">
+                        <div class="card-body">
+                            <p class="card-text">{{ $cartProduct->product->name }}</p>
+                            <p class="card-text">Количество: {{ $cartProduct->amount }}</p>
+                            <p class="card-text">Цена: {{ $cartProduct->product->price }} р</p>
+                            <p class="card-text">Итого: {{ $cartProduct->amount * $cartProduct->product->price }} р</p>
 
-        @if(!empty($cartProducts))
-        @php $totalAmount = 0; @endphp
-        @foreach ($cartProducts as $cartProduct)
-            <div class="card text">
-                <img class="card-img-top" src="{{ $cartProduct->Product->image }}" alt="Card image">
-                <div class="card-body">
-                    <p class="card-text">{{ $cartProduct->Product->name }}</p>
-                    <p class="card-text">Количество: {{ $cartProduct->amount }}</p>
-                    <p class="card-text">Цена: {{ $cartProduct->Product->price  }} р</p>
-                    <p class="card-text">Итого: {{ $cartProduct->amount * $cartProduct->Product->price }} р</p>
-
-                     @php $totalAmount += $cartProduct->amount * $cartProduct->Product->price; @endphp
-                </div>
-
-            </div>
-
-            @endforeach
-            <h3 class="card-title">Общая сумма заказа: {{ $totalAmount }} руб.</h3>
-
-        @else
-            <p>Корзина пуста.</p>
-        @endif
+                            @php $totalAmount += $cartProduct->amount * $cartProduct->product->price; @endphp
+                        </div>
+                    </div>
+                @endforeach
+                <h3 class="card-title">Общая сумма заказа: {{ $totalAmount }} руб.</h3>
+            @endif
+        </div>
     </div>
+
 </div>
     <style>
         body {

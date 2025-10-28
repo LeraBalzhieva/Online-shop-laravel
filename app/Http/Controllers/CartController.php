@@ -2,35 +2,41 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
 use App\Http\Requests\AddProductRequest;
 use App\Http\Requests\DecreaseProductRequest;
-use Illuminate\Support\Facades\Auth;
 use App\Http\Service\CartService;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\View\View;
 
-
+/**
+ * Класс для управления корзиной пользователя
+ */
 class CartController
 {
-    private CartService $cartService;
 
-    public function __construct()
+    public function __construct(protected CartService $cartService)
     {
-        $this->cartService = new CartService();
     }
 
+    /**
+     * Отображает корзину пользователя
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Http\RedirectResponse|object
+     *
+     */
     public function cart()
     {
 
         $cartProducts = $this->cartService->getCart(Auth::user());
 
-
-        if (empty($cartProducts)) {
-            return redirect()->route('catalog');
-        }
         return view('cart', compact('cartProducts'));
     }
 
-    public function addProductToCart(AddProductRequest $request)
+    /**
+     *  Добавляет товар в корзину пользователя.
+     * @param AddProductRequest $request Запрос с параметрами product_id и amount
+     * @return false|string JSON-ответ с обновлённым состоянием корзины
+     */
+    public function addProductToCart(AddProductRequest $request): \Illuminate\Http\JsonResponse
     {
         $user = Auth::user();
         $productId = $request->input('product_id');
@@ -38,10 +44,17 @@ class CartController
 
         $result = $this->cartService->addProduct($user, $productId, $amount);
 
-        return json_encode(['cart' => $result]);
+        return response()->json(['cart' => $result]);
     }
 
-    public function decreaseProductFromCart(DecreaseProductRequest $request)
+    /**
+     *  Уменьшает количество товара в корзине пользователя.
+     * @param DecreaseProductRequest $request Запрос с параметрами product_id и amount
+     * @return false|string JSON-ответ с обновлённым состоянием корзины
+     * @throws \Exception
+     */
+
+    public function decreaseProductFromCart(DecreaseProductRequest $request): \Illuminate\Http\JsonResponse
     {
         $user = Auth::user();
         $productId = $request->input('product_id');
@@ -49,6 +62,6 @@ class CartController
 
         $result = $this->cartService->decreaseProduct($user, $productId, $amount);
 
-        return json_encode(['cart' => $result]);
+        return response()->json(['cart' => $result]);
     }
 }

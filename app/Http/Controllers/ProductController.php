@@ -5,21 +5,33 @@ namespace App\Http\Controllers;
 use App\Http\Requests\AddReviewRequest;
 use App\Models\Product;
 use App\Models\Review;
-use App\Models\UserProduct;
-use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Request;
 
-
+/**
+ * Контроллер для работы с продуктами и отзывами.
+ */
 class ProductController
 {
+    /**
+     *  Отображает каталог продуктов
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|object
+     */
     public function getCatalog()
     {
-        $products = Product::all();
-        $cartItems = UserProduct::query()->where('user_id', Auth::id())->get();
+        $products = Cache::remember('products_all', 3600, function () {
+            return Product::all();
+        });
 
         return view('catalog', compact('products'));
     }
+
+    /**
+     * Отображает страницу продукта с отзывами.
+     * @param Product $product
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|object
+     */
 
     public function getProductReviews(Product $product)
     {
@@ -33,16 +45,13 @@ class ProductController
             'averageRating' => $averageRating
         ]);
     }
-    public function index()
-    {
-        $products = Cache::remember('products_all', 3600, function () {
-            return Product::all();
 
-        });
-
-        return view('catalog', compact('products'));
-    }
-
+    /**
+     * Обновляет данные продукта и сбрасывает кэш.
+     * @param Request $request
+     * @param Product $product
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function update(Request $request, Product $product)
     {
         $product->update($request->all());
@@ -52,6 +61,11 @@ class ProductController
             ->with('success', 'Продукт обновлён и кэш сброшен');
     }
 
+    /**
+     * Удаляет продукт и сбрасывает кэш.
+     * @param Product $product
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function destroy(Product $product)
     {
         $product->delete();
@@ -61,19 +75,25 @@ class ProductController
             ->with('success', 'Продукт удалён и кэш сброшен');
     }
 
+    /**
+     * Добавляет отзыв для продукта.
+     * @param AddReviewRequest $request
+     * @param Product $product
+     * @return \Illuminate\Http\RedirectResponse
+     */
 
     public function addReviews(AddReviewRequest $request, Product $product)
     {
         $data = $request->validated();
 
         Review::query()->create([
-            'product_id' => $data['product_id'],
-            'user_id' => Auth::id(),
+            'product_id' =>$product->id,
+            'user_id' => $request->user()->id,
             'comment' => $data['comment'],
             'rating' => $data['rating'],
         ]);
 
-        return redirect()->route('product.show', ['product' => $data['product_id']]);
+        return redirect()->route('product.show', ['product' => $product->id]);
 
     }
 }

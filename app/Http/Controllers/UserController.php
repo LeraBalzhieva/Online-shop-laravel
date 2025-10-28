@@ -4,26 +4,36 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\SignUpRequest;
-use App\Http\Service\RabbitmqService;
-use App\Jobs\SendUserNotification;
-use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
-
-class
-UserController
+class UserController
 {
-
+    /**
+     * Отображает форму регистрации
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|object
+     */
     public function getSignUpForm()
     {
         return view('signUpForm');
     }
+
+    /**
+     * Отображает форму логина
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|object
+     */
     public function getLogin()
     {
         return view('login');
     }
+
+    /**
+     * Регистрация нового пользователя
+     * @param SignUpRequest $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
+
     public function signUp(SignUpRequest $request)
     {
 
@@ -33,56 +43,74 @@ UserController
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
         ]);
-
-       // SendUserNotification::dispatch($user);
-
- //       Mail::to('dashkina.lera@yandex.ru')->send(New TestMail($data));
-  //      $this->rabbitmqService->produce(['user_id' => $user->id], 'sign-up-email');
-
-        return response()->redirectTo('login');
+        return redirect()->route('login');
     }
+
+    /**
+     * Отображает профиль текущего пользователя
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|object
+     */
+
     public function getProfile()
     {
         $user = Auth::user();
         return view('profile', ['user' => $user]);
     }
+
+    /**
+     *  Форма редактирования профиля
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|object
+     */
+
     public function getEditProfile()
     {
         $user = Auth::user();
         return view('edit_profile', ['user' => $user]);
     }
 
+    /**
+     * Логин
+     * @param LoginRequest $request объект Request с данными для логина
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function login(LoginRequest $request)
     {
         $validatedData = $request->validated();
 
-        if (Auth::attempt(['email' => $validatedData['email'], 'password' => $validatedData['password']]))
-        {
+        if (Auth::attempt(['email' => $validatedData['email'], 'password' => $validatedData['password']])) {
             return response()->redirectTo('catalog');
         }
         return redirect()->route('login')->withErrors(['email' => 'Неверный логин или пароль.']);
     }
+
+    /**
+     * Логаут пользователя
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function logout()
-    {       Auth::logout();
+    {
+        Auth::logout();
         return redirect()->route('login');
     }
 
+    /**
+     * Редактирвание профиля
+     * @param SignUpRequest $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
 
     public function editProfile(SignUpRequest $request)
     {
         $validatedData = $request->validated();
 
-        // Получаем текущего аутентифицированного пользователя
         $user = auth()->user();
 
-        // Обновляем данные пользователя
         $user->query()->update([
             'name' => $validatedData['name'],
             'email' => $validatedData['email'],
             'password' => Hash::make($validatedData['password']),
         ]);
 
-        // Редиректим на страницу профиля
         return redirect()->route('profile')->with('success', 'Профиль успешно обновлен!');
     }
 }
