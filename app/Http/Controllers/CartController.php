@@ -15,8 +15,7 @@ class CartController
 {
 
     public function __construct(protected CartService $cartService)
-    {
-    }
+    {}
 
     /**
      * Отображает корзину пользователя
