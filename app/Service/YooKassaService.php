@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Http\Service\Clients;
+namespace App\Service;
 
 use App\DTO\YooKassaPaymentDTO;
 use App\DTO\YooKassaWebhookDTO;
+use App\Enums\OrderStatusEnum;
 use App\Enums\YooKassaEventEnum;
 use App\Models\Order;
 use YooKassa\Client;
@@ -17,9 +18,9 @@ class YooKassaService
 {
     public Client $client;
 
-    public function __construct()
+    public function __construct(Client $client)
     {
-        $this->client = new Client();
+        $this->client = $client;
         $this->client->setAuth(
             config('services.yookassa.shop_id'),
             config('services.yookassa.api_key')
@@ -42,7 +43,7 @@ class YooKassaService
      * @throws \YooKassa\Common\Exceptions\TooManyRequestsException
      * @throws \YooKassa\Common\Exceptions\UnauthorizedException
      */
-    public function createPayment(YooKassaPaymentDTO $dto): string
+    public function createPayment(YooKassaPaymentDTO $dto)
     {
         $payment = $this->client->createPayment([
             'amount' => [
@@ -74,8 +75,8 @@ class YooKassaService
         if ($dto->event === YooKassaEventEnum::PAYMENT_SUCCEEDED) {
             $order = Order::find($dto->orderId);
 
-            if ($order && $order->status !== 'paid') {
-                $order->update(['status' => 'paid']);
+            if ($order && $order->status !== OrderStatusEnum::PAID) {
+                $order->update(['status' => OrderStatusEnum::PAID]);
             }
         }
     }

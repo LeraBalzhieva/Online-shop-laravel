@@ -1,13 +1,11 @@
 <?php
 
-namespace App\Http\Service\Clients;
+namespace App\Service\Clients;
 
 use App\DTO\YougileTaskDto;
-use App\Jobs\CreateTaskYougile;
-use App\Models\Order;
 use GuzzleHttp\Exception\RequestException;
-use http\Exception\RuntimeException;
 use Illuminate\Support\Facades\Http;
+
 /**
  * Клиент для работы с API YouGile.
  * Отвечает за создание и удаление задач через API.

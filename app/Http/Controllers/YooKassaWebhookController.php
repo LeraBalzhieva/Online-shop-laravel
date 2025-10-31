@@ -3,11 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\DTO\YooKassaWebhookDTO;
-use App\Http\Service\Clients\YooKassaService;
-use App\Http\Service\OrderService;
-use App\Models\Order;
+use App\Service\YooKassaService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 
 /**
  *  Контроллер для обработки вебхуков от YooKassa.

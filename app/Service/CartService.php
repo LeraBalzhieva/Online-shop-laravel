@@ -1,11 +1,10 @@
 <?php
 
-namespace App\Http\Service;
-use App\Models\User;
-use App\Http\Requests\AddProductRequest;
+namespace App\Service;
 use App\Models\Product;
+use App\Models\User;
 use App\Models\UserProduct;
-use Illuminate\Support\Facades\Auth;
+
 /**
  * Сервис для работы с корзиной пользователя.
  */

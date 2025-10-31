@@ -4,9 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\AddProductRequest;
 use App\Http\Requests\DecreaseProductRequest;
-use App\Http\Service\CartService;
+use App\Service\CartService;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\View\View;
 
 /**
  * Класс для управления корзиной пользователя

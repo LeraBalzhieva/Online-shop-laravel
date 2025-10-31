@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\DTO\CreateOrderDTO;
 use App\Http\Requests\OrderRequest;
-use App\Http\Service\CartService;
-use App\Http\Service\OrderService;
 use App\Models\Order;
+use App\Service\CartService;
+use App\Service\OrderService;
 use Illuminate\Support\Facades\Auth;
 
 /**
@@ -39,8 +40,20 @@ class OrderController extends Controller
      */
     public function order(OrderRequest $request)
     {
-        $paymentUrl = $this->orderService->create($request);
-        return redirect()->away($paymentUrl);
+        $dto = new CreateOrderDTO(
+            name: $request->input('name'),
+            phone: $request->input('phone'),
+            city: $request->input('city'),
+            address: $request->input('address'),
+            comment: $request->input('comment'),
+            user: Auth::user(),
+        );
+
+        $order = $this->orderService->createOrder($dto);
+
+        $paymentUrl = $this->orderService->createYougileTask($order);
+
+        return redirect($paymentUrl);
     }
 
     /**

@@ -3,13 +3,14 @@
 namespace App\Jobs;
 
 use App\DTO\YougileTaskDto;
-use App\Http\Service\Clients\YougileClient;
 use App\Models\Order;
+use App\Service\Clients\YougileClient;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+
 /**
  * Job для создания задачи в Yougile.
  * Отправляет данные заказа и сохраняет ID задачи в таблицу orders.

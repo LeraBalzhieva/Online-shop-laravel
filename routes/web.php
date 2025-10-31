@@ -1,8 +1,8 @@
 <?php
 
+use App\Http\Controllers\MailTestController;
 use App\Models\Order;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\MailTestController;
 
 Route::get('/', function () {
     return view('welcome');

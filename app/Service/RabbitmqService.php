@@ -1,12 +1,10 @@
 <?php
 
-namespace App\Http\Service;
+namespace App\Service;
 
-use App\Mail\TestMail;
-use App\Models\User;
-use Illuminate\Support\Facades\Mail;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Message\AMQPMessage;
+
 /**
  * Сервис для работы с RabbitMQ.
  */

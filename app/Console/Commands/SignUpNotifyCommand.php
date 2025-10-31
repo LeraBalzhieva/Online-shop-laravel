@@ -3,9 +3,9 @@
 namespace App\Console\Commands;
 
 
-use App\Http\Service\RabbitmqService;
 use App\Mail\TestMail;
 use App\Models\User;
+use App\Service\RabbitmqService;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Mail;
 
